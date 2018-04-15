@@ -4,7 +4,7 @@
 ## 版本要求
 ArcGIS Runtime SDK for Android 100.1
 
-## 效果图
+## GraphicsOverlay效果图
 
 ![效果图](screenshot.png)
 
@@ -29,4 +29,42 @@ mapView.addMapScaleChangedListener(new MapScaleChangedListener() {
         }
     }
 });
+```
+
+## 支持FeatureLayer
+
+![效果图](featurelayer.png)
+
+## FeatureLayer的查询
+```java 
+private void _clusterFeatures() {
+    QueryParameters queryParameters = new QueryParameters();
+    queryParameters.setGeometry(_mapView.getVisibleArea());
+    queryParameters.setReturnGeometry(true);
+    final ListenableFuture<FeatureQueryResult> futures =
+            _featureLayer.getFeatureTable().queryFeaturesAsync(queryParameters);
+    // add done loading listener to fire when the selection returns
+    futures.addDoneListener(new Runnable() {
+        @Override
+         public void run() {
+            try {
+                //call get on the future to get the result
+                FeatureQueryResult result = futures.get();
+                // create an Iterator
+                Iterator<Feature> iterator = result.iterator();
+                Feature feature;
+                // cycle through selections
+                int counter = 0;
+                while (iterator.hasNext()) {
+                    feature = iterator.next();
+                    _GraphicsOverlay.getGraphics().add(new Graphic(feature.getGeometry()));
+                    counter++;
+                }
+                _clusterGraphics();
+            } catch (Exception e) {
+                Log.d("cluster", e.getLocalizedMessage());
+            }
+        }
+    });
+}
 ```

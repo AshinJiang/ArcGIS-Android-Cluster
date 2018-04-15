@@ -10,11 +10,14 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.esri.arcgisruntime.data.FeatureCollectionTable;
+import com.esri.arcgisruntime.data.ServiceFeatureTable;
 import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.geometry.SpatialReference;
 import com.esri.arcgisruntime.layers.ArcGISMapImageLayer;
 import com.esri.arcgisruntime.layers.ArcGISTiledLayer;
 import com.esri.arcgisruntime.layers.ArcGISVectorTiledLayer;
+import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Basemap;
 import com.esri.arcgisruntime.mapping.view.Graphic;
@@ -27,6 +30,7 @@ import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol;
 public class MainActivity extends AppCompatActivity {
     private MapView mMapView;
     GraphicsOverlay graphicsOverlay = new GraphicsOverlay();
+    FeatureLayer featureLayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,24 +45,50 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                initRamdData();
                 graphicsOverlay.setVisible(false);
                 ClusterLayer clusterLayer = new ClusterLayer(mMapView, graphicsOverlay, getApplicationContext());
             }
         });
 
-        addVecLayer();
-        initRamdData();
+        FloatingActionButton fabFeatureLayer = findViewById(R.id.fab_feature_layer);
+        fabFeatureLayer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                featureLayer.setVisible(false);
+                ClusterFeatureLayer clusterFeatureLayer = new ClusterFeatureLayer(
+                        mMapView, featureLayer, getApplicationContext(), 150
+                );
+            }
+        });
+
+        addtiledLayer();
+        addFeatureLayer();
+    }
+
+    private void addFeatureLayer() {
+        featureLayer = new FeatureLayer(new ServiceFeatureTable(
+                "https://sampleserver6.arcgisonline.com/arcgis/rest/services/USA/MapServer/0"));
+        mMapView.getMap().getOperationalLayers().add(featureLayer);
+    }
+
+    private void addtiledLayer() {
+        String tiledUrl = "http://map.geoq.cn/arcgis/rest/services/ChinaOnlineCommunityENG/MapServer";
+        ArcGISTiledLayer tiledLayer = new ArcGISTiledLayer(tiledUrl);
+        ArcGISMap map = new ArcGISMap(new Basemap(tiledLayer));
+        mMapView.setMap(map);
     }
 
     private void addVecLayer() {
-        String vecUrl = "https://basemaps.arcgis.com/v1/arcgis/rest/services/World_Basemap_WGS84/VectorTileServer";
+        String vecUrl = "https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer";
         ArcGISVectorTiledLayer vectorTiledLayer = new ArcGISVectorTiledLayer(vecUrl);
         ArcGISMap map = new ArcGISMap(new Basemap(vectorTiledLayer));
         mMapView.setMap(map);
     }
+
     SimpleMarkerSymbol simpleMarkerSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, Color.BLACK, 5);
 
-    private void initRamdData(){
+    private void initRamdData() {
         //随机点
         for (int i = 0; i < 1000; i++) {
             double lat = Math.random() + 39.474923;
