@@ -2,7 +2,7 @@
 使用ArcGIS Runtime SDK for Android实现的点聚合。
 
 ## 版本要求
-ArcGIS Runtime SDK for Android 100.1
+ArcGIS Runtime SDK for Android 100.5
 
 ## GraphicsOverlay效果图
 
