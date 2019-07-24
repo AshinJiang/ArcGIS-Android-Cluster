@@ -26,6 +26,9 @@ import java.util.Map;
 /**
  * Created by jiang on 2017/9/5.
  */
+/**
+ * update by jiang on 2019/7/23.
+ */
 
 public class ClusterLayer {
     final private int _clusterTolerance = 150;
@@ -126,7 +129,7 @@ public class ClusterLayer {
                 Map<String, Object> cluster = this._clusterData.get(i);
 
                 Point pointCluster = new Point((Double) cluster.get("x"),
-                        (Double) cluster.get("y"), SpatialReference.create(4326));
+                        (Double) cluster.get("y"), _mapView.getSpatialReference());
 
                 if (this._clusterTest(point, pointCluster)) {
                     this._clusterAddGraphic(graphic, cluster);
@@ -222,7 +225,7 @@ public class ClusterLayer {
         for (int i = 0, il = this._clusterData.size(); i < il; i++) {
             Map<String, Object> cluster = this._clusterData.get(i);
             Point pointCluster = new Point((Double) cluster.get("x"),
-                    (Double) cluster.get("y"), SpatialReference.create(4326));
+                    (Double) cluster.get("y"),_mapView.getSpatialReference());
 
             Graphic graphic = new Graphic(pointCluster, cluster, createClusterSymbol(cluster));
             this._clusterGraphicsOverlay.getGraphics().add(graphic);

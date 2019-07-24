@@ -31,6 +31,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * update by jiang on 2019/7/24.
+ */
+
 public class ClusterFeatureLayer {
     private int _clusterTolerance = 150;
 
@@ -78,6 +82,7 @@ public class ClusterFeatureLayer {
                             .getWidth() / _mapView.getWidth();
                     _clusterData.clear();
                     _clusterGraphics.clear();
+                    _GraphicsOverlay.getGraphics().clear();
                     _clusterGraphicsOverlay.getGraphics().clear();
                     _clusterFeatures();
                 }
